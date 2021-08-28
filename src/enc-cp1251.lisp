@@ -37,7 +37,7 @@
       #x20ac #x2030 #x0409 #x2039 #x040a #x040c #x040b #x040f
       ;; #x90
       #x0452 #x2018 #x2019 #x201c #x201d #x2022 #x2013 #x2014
-      #xfffd #x2122 #x0459 #x203a #x045a #x045c #x045b #x045f
+      nil    #x2122 #x0459 #x203a #x045a #x045c #x045b #x045f
       ;; #xa0
       #x00a0 #x040e #x045e #x0408 #x00a4 #x0490 #x00a6 #x00a7
       #x0401 #x00a9 #x0404 #x00ab #x00ac #x00ad #x00ae #x0407
@@ -61,7 +61,8 @@
 (define-unibyte-decoder :cp1251 (octet)
   (if (< octet #x80)
       octet
-      (svref +cp1251-to-unicode+ (the ub8 (- octet #x80)))))
+      (or (svref +cp1251-to-unicode+ (the ub8 (- octet #x80)))
+          (handle-error))))
 
 (define-constant +unicode-a0-bf-to-cp1251+
     #(#xa0 #x00 #x00 #x00 #xa4 #x00 #xa6 #xa7  ; #xa0-#xa7

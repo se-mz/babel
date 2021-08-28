@@ -41,25 +41,26 @@
 
 (define-unibyte-decoder :cp1252 (octet)
   (if (and (>= octet #x80) (<= octet #x9f))
-      (svref +cp1252-to-unicode+
-             (the ub8 (- octet #x80)))
+      (or (svref +cp1252-to-unicode+
+                 (the ub8 (- octet #x80)))
+          (handle-error))
       octet))
 
 (define-constant +unicode-0152-017e-cp1252+
-    #(#x8c #x9c #x00 #x00 #x00 #x00 #x00 #x00
-      #x00 #x00 #x00 #x00 #x00 #x00 #x8a #x9a
-      #x00 #x00 #x00 #x00 #x00 #x00 #x00 #x00
-      #x00 #x00 #x00 #x00 #x00 #x00 #x00 #x00
-      #x00 #x00 #x00 #x00 #x00 #x00 #x9f #x00
-      #x00 #x00 #x00 #x8e #x9e)
+    #(#x8c #x9c nil  nil  nil  nil  nil  nil
+      nil  nil  nil  nil  nil  nil  #x8a #x9a
+      nil  nil  nil  nil  nil  nil  nil  nil
+      nil  nil  nil  nil  nil  nil  nil  nil
+      nil  nil  nil  nil  nil  nil  #x9f nil
+      nil  nil  nil  #x8e #x9e)
   :test #'equalp)
 
 (define-constant +unicode-2013-203a-cp1252+
-    #(#x96 #x97 #x00 #x00 #x00 #x91 #x92 #x82
-      #x00 #x93 #x94 #x84 #x00 #x86 #x87 #x95
-      #x00 #x00 #x00 #x85 #x00 #x00 #x00 #x00
-      #x00 #x00 #x00 #x00 #x00 #x89 #x00 #x00
-      #x00 #x00 #x00 #x00 #x00 #x00 #x8b #x9b)
+    #(#x96 #x97 nil  nil  nil  #x91 #x92 #x82
+      nil  #x93 #x94 #x84 nil  #x86 #x87 #x95
+      nil  nil  nil  #x85 nil  nil  nil  nil
+      nil  nil  nil  nil  nil  #x89 nil  nil
+      nil  nil  nil  nil  nil  nil  #x8b #x9b)
   :test #'equalp)
 
 (define-unibyte-encoder :cp1252 (code)
@@ -68,14 +69,16 @@
          (and (> code #xa0) (<= code #xff)))
      code)
     ((and (>= code #x0152) (<= code #x017e))
-     (svref +unicode-0152-017e-cp1252+
-            (the ub8 (- code #x0152))))
+     (or (svref +unicode-0152-017e-cp1252+
+                (the ub8 (- code #x0152)))
+         (handle-error)))
     ((= code #x0192) #x83)
     ((= code #x02c6) #x88)
     ((= code #x02dc) #x89)
     ((and (>= code #x2013) (<= code #x203a))
-     (svref +unicode-2013-203a-cp1252+
-            (the ub8 (- code #x2013))))
+     (or (svref +unicode-2013-203a-cp1252+
+                (the ub8 (- code #x2013)))
+         (handle-error)))
     ((= code #x20ac) #x80)
     ((= code #x2122) #x99)
     (t (handle-error))))

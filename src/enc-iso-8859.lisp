@@ -195,29 +195,31 @@ characters found in most languages used in Southern Europe."
 
 (define-constant +iso-8859-3-to-unicode+
     #(;; #xa0
-      #x00a0 #x0126 #x02d8 #x00a3 #x00a4 #xfffd #x0124 #x00a7
-      #x00a8 #x0130 #x015e #x011e #x0134 #x00ad #xfffd #x017b
+      #x00a0 #x0126 #x02d8 #x00a3 #x00a4 nil    #x0124 #x00a7
+      #x00a8 #x0130 #x015e #x011e #x0134 #x00ad nil    #x017b
       ;; #xb0
       #x00b0 #x0127 #x00b2 #x00b3 #x00b4 #x00b5 #x0125 #x00b7
-      #x00b8 #x0131 #x015f #x011f #x0135 #x00bd #xfffd #x017c
+      #x00b8 #x0131 #x015f #x011f #x0135 #x00bd nil    #x017c
       ;; #xc0
-      #x00c0 #x00c1 #x00c2 #xfffd #x00c4 #x010a #x0108 #x00c7
+      #x00c0 #x00c1 #x00c2 nil    #x00c4 #x010a #x0108 #x00c7
       #x00c8 #x00c9 #x00ca #x00cb #x00cc #x00cd #x00ce #x00cf
       ;; #xd0
-      #xfffd #x00d1 #x00d2 #x00d3 #x00d4 #x0120 #x00d6 #x00d7
+      nil    #x00d1 #x00d2 #x00d3 #x00d4 #x0120 #x00d6 #x00d7
       #x011c #x00d9 #x00da #x00db #x00dc #x016c #x015c #x00df
       ;; #xe0
-      #x00e0 #x00e1 #x00e2 #xfffd #x00e4 #x010b #x0109 #x00e7
+      #x00e0 #x00e1 #x00e2 nil    #x00e4 #x010b #x0109 #x00e7
       #x00e8 #x00e9 #x00ea #x00eb #x00ec #x00ed #x00ee #x00ef
       ;; #xf0
-      #xfffd #x00f1 #x00f2 #x00f3 #x00f4 #x0121 #x00f6 #x00f7
+      nil    #x00f1 #x00f2 #x00f3 #x00f4 #x0121 #x00f6 #x00f7
       #x011d #x00f9 #x00fa #x00fb #x00fc #x016d #x015d #x02d9)
   :test #'equalp)
 
 (define-unibyte-decoder :iso-8859-3 (octet)
   (if (< octet #xa0)
       octet
-      (svref +iso-8859-3-to-unicode+ (the ub8 (- octet #xa0)))))
+      (or (svref +iso-8859-3-to-unicode+
+                 (the ub8 (- octet #xa0)))
+          (handle-error))))
 
 (define-character-encoding :iso-8859-4
     "An 8-bit, fixed-width character encoding in which codes
@@ -405,29 +407,31 @@ Arabic alphabet."
 
 (define-constant +iso-8859-6-to-unicode+
     #(;; #xa0
-      #x00a0 #xfffd #xfffd #xfffd #x00a4 #xfffd #xfffd #xfffd
-      #xfffd #xfffd #xfffd #xfffd #x060c #x00ad #xfffd #xfffd
+      #x00a0 nil    nil    nil    #x00a4 nil    nil    nil
+      nil    nil    nil    nil    #x060c #x00ad nil    nil
       ;; #xb0
-      #xfffd #xfffd #xfffd #xfffd #xfffd #xfffd #xfffd #xfffd
-      #xfffd #xfffd #xfffd #x061b #xfffd #xfffd #xfffd #x061f
+      nil    nil    nil    nil    nil    nil    nil    nil
+      nil    nil    nil    #x061b nil    nil    nil    #x061f
       ;; #xc0
-      #xfffd #x0621 #x0622 #x0623 #x0624 #x0625 #x0626 #x0627
+      nil    #x0621 #x0622 #x0623 #x0624 #x0625 #x0626 #x0627
       #x0628 #x0629 #x062a #x062b #x062c #x062d #x062e #x062f
       ;; #xd0
       #x0630 #x0631 #x0632 #x0633 #x0634 #x0635 #x0636 #x0637
-      #x0638 #x0639 #x063a #xfffd #xfffd #xfffd #xfffd #xfffd
+      #x0638 #x0639 #x063a nil    nil    nil    nil    nil
       ;; #xe0
       #x0640 #x0641 #x0642 #x0643 #x0644 #x0645 #x0646 #x0647
       #x0648 #x0649 #x064a #x064b #x064c #x064d #x064e #x064f
       ;; #xf0
-      #x0650 #x0651 #x0652 #xfffd #xfffd #xfffd #xfffd #xfffd
-      #xfffd #xfffd #xfffd #xfffd #xfffd #xfffd #xfffd #xfffd)
+      #x0650 #x0651 #x0652 nil    nil    nil    nil    nil
+      nil    nil    nil    nil    nil    nil    nil    nil)
   :test #'equalp)
 
 (define-unibyte-decoder :iso-8859-6 (octet)
   (if (< octet #xa0)
       octet
-      (svref +iso-8859-6-to-unicode+ (the ub8 (- octet #xa0)))))
+      (or (svref +iso-8859-6-to-unicode+
+                 (the ub8 (- octet #xa0)))
+          (handle-error))))
 
 (define-character-encoding :iso-8859-7
     "An 8-bit, fixed-width character encoding in which codes
@@ -486,7 +490,7 @@ characters found in the Greek alphabet."
 (define-constant +iso-8859-7-to-unicode+
     #(;; #xa0
       #x00a0 #x2018 #x2019 #x00a3 #x20ac #x20af #x00a6 #x00a7
-      #x00a8 #x00a9 #x037a #x00ab #x00ac #x00ad #xfffd #x2015
+      #x00a8 #x00a9 #x037a #x00ab #x00ac #x00ad nil    #x2015
       ;; #xb0
       #x00b0 #x00b1 #x00b2 #x00b3 #x0384 #x0385 #x0386 #x00b7
       #x0388 #x0389 #x038a #x00bb #x038c #x00bd #x038e #x038f
@@ -494,20 +498,22 @@ characters found in the Greek alphabet."
       #x0390 #x0391 #x0392 #x0393 #x0394 #x0395 #x0396 #x0397
       #x0398 #x0399 #x039a #x039b #x039c #x039d #x039e #x039f
       ;; #xd0
-      #x03a0 #x03a1 #xfffd #x03a3 #x03a4 #x03a5 #x03a6 #x03a7
+      #x03a0 #x03a1 nil    #x03a3 #x03a4 #x03a5 #x03a6 #x03a7
       #x03a8 #x03a9 #x03aa #x03ab #x03ac #x03ad #x03ae #x03af
       ;; #xe0
       #x03b0 #x03b1 #x03b2 #x03b3 #x03b4 #x03b5 #x03b6 #x03b7
       #x03b8 #x03b9 #x03ba #x03bb #x03bc #x03bd #x03be #x03bf
       ;; #xf0
       #x03c0 #x03c1 #x03c2 #x03c3 #x03c4 #x03c5 #x03c6 #x03c7
-      #x03c8 #x03c9 #x03ca #x03cb #x03cc #x03cd #x03ce #xfffd)
+      #x03c8 #x03c9 #x03ca #x03cb #x03cc #x03cd #x03ce nil)
   :test #'equalp)
 
 (define-unibyte-decoder :iso-8859-7 (octet)
   (if (< octet #xa0)
       octet
-      (svref +iso-8859-7-to-unicode+ (the ub8 (- octet #xa0)))))
+      (or (svref +iso-8859-7-to-unicode+
+                 (the ub8 (- octet #xa0)))
+          (handle-error))))
 
 (define-character-encoding :iso-8859-8
     "An 8-bit, fixed-width character encoding in which codes #x00-#x9f
@@ -558,29 +564,31 @@ Hebrew alphabet."
 
 (define-constant +iso-8859-8-to-unicode+
     #(;; #xa0
-      #x00a0 #xfffd #x00a2 #x00a3 #x00a4 #x00a5 #x00a6 #x00a7
+      #x00a0 nil    #x00a2 #x00a3 #x00a4 #x00a5 #x00a6 #x00a7
       #x00a8 #x00a9 #x00d7 #x00ab #x00ac #x00ad #x00ae #x00af
       ;; #xb0
       #x00b0 #x00b1 #x00b2 #x00b3 #x00b4 #x00b5 #x00b6 #x00b7
-      #x00b8 #x00b9 #x00f7 #x00bb #x00bc #x00bd #x00be #xfffd
+      #x00b8 #x00b9 #x00f7 #x00bb #x00bc #x00bd #x00be nil
       ;; #xc0
-      #xfffd #xfffd #xfffd #xfffd #xfffd #xfffd #xfffd #xfffd
-      #xfffd #xfffd #xfffd #xfffd #xfffd #xfffd #xfffd #xfffd
+      nil    nil    nil    nil    nil    nil    nil    nil
+      nil    nil    nil    nil    nil    nil    nil    nil
       ;; #xd0
-      #xfffd #xfffd #xfffd #xfffd #xfffd #xfffd #xfffd #xfffd
-      #xfffd #xfffd #xfffd #xfffd #xfffd #xfffd #xfffd #x2017
+      nil    nil    nil    nil    nil    nil    nil    nil
+      nil    nil    nil    nil    nil    nil    nil    #x2017
       ;; #xe0
       #x05d0 #x05d1 #x05d2 #x05d3 #x05d4 #x05d5 #x05d6 #x05d7
       #x05d8 #x05d9 #x05da #x05db #x05dc #x05dd #x05de #x05df
       ;; #xf0
       #x05e0 #x05e1 #x05e2 #x05e3 #x05e4 #x05e5 #x05e6 #x05e7
-      #x05e8 #x05e9 #x05ea #xfffd #xfffd #x200e #x200f #xfffd)
+      #x05e8 #x05e9 #x05ea nil    nil    #x200e #x200f nil)
   :test #'equalp)
 
 (define-unibyte-decoder :iso-8859-8 (octet)
   (if (< octet #xa0)
       octet
-      (svref +iso-8859-8-to-unicode+ (the ub8 (- octet #xa0)))))
+      (or (svref +iso-8859-8-to-unicode+
+                 (the ub8 (- octet #xa0)))
+          (handle-error))))
 
 (define-character-encoding :iso-8859-9
     "An 8-bit, fixed-width character encoding in which codes
@@ -731,10 +739,8 @@ characters found the Thai alphabet."
 
 (define-unibyte-decoder :iso-8859-11 (octet)
   (cond ((<= octet #xa0) octet)
-        ((or (<= #xdb octet #xde)
-             (<= #xfc octet #xff))
-         #xfffd)
-        ((<= octet #xfb)
+        ((and (<= octet #xfb)
+              (not (<= #xdb octet #xde)))
          (+ octet #x0d60))
         (t (handle-error))))
 
